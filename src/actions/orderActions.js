@@ -74,7 +74,9 @@ export const payOrder = (orderId, paymentResult) => async (
   getState
 ) => {
   try {
-    dispatch({ type: ORDER_PAY_REQUEST });
+    dispatch({
+      type: ORDER_PAY_REQUEST,
+    });
 
     const {
       userLogin: { userInfo },
@@ -93,16 +95,21 @@ export const payOrder = (orderId, paymentResult) => async (
       config
     );
 
-    dispatch({ type: ORDER_PAY_SUCCESS, payload: data });
-
-    dispatch({ type: ORDER_PAY_RESET });
-  } catch (err) {
+    dispatch({
+      type: ORDER_PAY_SUCCESS,
+      payload: data,
+    });
+  } catch (error) {
+    const message =
+      error.response && error.response.data.message
+        ? error.response.data.message
+        : error.message;
+    // if (message === "Not authorized, token failed") {
+    // dispatch(logout());
+    // }
     dispatch({
       type: ORDER_PAY_FAIL,
-      payload:
-        err.response && err.response.data.message
-          ? err.response.data.message
-          : err.message,
+      payload: message,
     });
   }
 };
